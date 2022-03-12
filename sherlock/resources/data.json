@@ -339,7 +339,7 @@
     "username_unclaimed": "noonewouldeverusethis77777"
   },
   "Chess": {
-    "errorMsg": "usernameSuggestions",
+    "errorMsg": "\"valid\": false",
     "errorType": "message",
     "regexCheck": "^[a-z1-9]{3,25}$",
     "url": "https://www.chess.com/member/{}",
@@ -1100,6 +1100,14 @@
     "errorType": "status_code",
     "url": "https://www.munzee.com/m/{}",
     "urlMain": "https://www.munzee.com/",
+    "username_claimed": "blue",
+    "username_unclaimed": "noonewouldeverusethis7"
+  },
+  "Minecraft": {
+    "errorType": "status_code",
+    "errorCode": 204,
+    "url": "https://api.mojang.com/users/profiles/minecraft/{}",
+    "urlMain": "https://minecraft.net/",
     "username_claimed": "blue",
     "username_unclaimed": "noonewouldeverusethis7"
   },

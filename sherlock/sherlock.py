@@ -23,6 +23,7 @@ from result import QueryStatus
 from result import QueryResult
 from notify import QueryNotifyPrint
 from sites  import SitesInformation
+from colorama import init
 
 module_name = "Sherlock: Find Usernames Across Social Networks"
 __version__ = "0.14.0"
@@ -331,6 +332,7 @@ def sherlock(username, site_data, query_notify,
 
         # Get the expected error type
         error_type = net_info["errorType"]
+        error_code = net_info.get("errorCode")
 
         # Retrieve future and ensure it has finished
         future = net_info["request_future"]
@@ -395,8 +397,15 @@ def sherlock(username, site_data, query_notify,
                                      QueryStatus.AVAILABLE,
                                      query_time=response_time)
         elif error_type == "status_code":
+            # Checks if the Status Code is equal to the optional "errorCode" given in 'data.json'
+            if error_code == r.status_code:
+                result = QueryResult(username,
+                                     social_network,
+                                     url,
+                                     QueryStatus.AVAILABLE,
+                                     query_time=response_time)
             # Checks if the status code of the response is 2XX
-            if not r.status_code >= 300 or r.status_code < 200:
+            elif not r.status_code >= 300 or r.status_code < 200:
                 result = QueryResult(username,
                                      social_network,
                                      url,
@@ -583,7 +592,14 @@ def main():
     if args.tor or args.unique_tor:
         print("Using Tor to make requests")
         print("Warning: some websites might refuse connecting over Tor, so note that using this option might increase connection errors.")
-
+    
+    if args.no_color:
+        # Disable color output.
+        init(strip=True, convert=False)
+    else:
+        # Enable color output.
+        init(autoreset=True)
+        
     # Check if both output methods are entered as input.
     if args.output is not None and args.folderoutput is not None:
         print("You can only use one of the output methods.")
@@ -640,8 +656,7 @@ def main():
     # Create notify object for query results.
     query_notify = QueryNotifyPrint(result=None,
                                     verbose=args.verbose,
-                                    print_all=args.print_all,
-                                    color=not args.no_color)
+                                    print_all=args.print_all)
 
     # Run report on all specified users.
     for username in args.username:
